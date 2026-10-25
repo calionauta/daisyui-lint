@@ -42,6 +42,7 @@ daisyui-lint [flags] [paths...]
 | `--allow PATH` | accepted arbitrary-value tokens, one per line; default: `.daisyui-allow`, searched upward |
 | `--format text\|json\|sarif` | text (default), machine-readable JSON, or SARIF for GitHub code scanning |
 | `--emit-vocabulary` | print the parsed skill as JSON (this is how the bundled snapshot is generated) |
+| `--check-update` | ask GitHub for the newest release and print it if it is newer; never fails the run, never runs implicitly (a linter in CI must not pay a network round-trip per invocation) |
 | `--version` | tool version, where the vocabulary came from, and the DaisyUI release it maps to |
 
 Exit codes: `0` clean, `1` findings at error severity, `2` usage or setup error.
