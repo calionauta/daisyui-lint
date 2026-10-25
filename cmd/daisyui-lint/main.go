@@ -35,7 +35,8 @@ import (
 )
 
 // Version is the binary's own version; it moves independently of DaisyUI.
-const Version = "0.1.0"
+// release-please rewrites the annotated line; goreleaser injects the tag.
+var Version = "0.1.0" // x-release-please-version
 
 // skipDirs are never linted: fixtures intentionally contain broken markup, and
 // vendored trees are not the project's code.

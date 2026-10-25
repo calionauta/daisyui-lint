@@ -10,7 +10,10 @@ daisyui-lint --version
 daisyui-lint --strict web/
 ```
 
-## What it catches
+Prebuilt binaries (linux/darwin, amd64/arm64) are attached to each
+[release](https://github.com/calionauta/daisyui-lint/releases).
+
+## Codes
 
 | Code | What it means |
 |---|---|
@@ -79,6 +82,14 @@ a silent narrowing. `--version` always says which vocabulary a run used.
     strict: "true"
     css: "src/*.css"
 ```
+
+## Releases
+
+Conventional commits on `master` drive [release-please](https://github.com/googleapis/release-please):
+it keeps one open release PR, and merging it bumps the annotated `Version`
+constant, writes `CHANGELOG.md`, tags, and creates the release. The tag then runs
+goreleaser, which builds the four binaries and uploads them with a checksum file.
+Nothing is tagged by hand.
 
 ## License
 

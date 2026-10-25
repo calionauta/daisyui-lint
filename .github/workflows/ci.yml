@@ -29,6 +29,12 @@ jobs:
           test ! -s /tmp/gofmt.out
       - name: Build
         run: go build ./...
+      - name: goreleaser config is valid
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          distribution: goreleaser
+          version: "~> v2"
+          args: check
       - name: Dogfood on the vendored skill
         run: |
           go run ./cmd/daisyui-lint --strict --css cmd/daisyui-lint/testdata/consumer/acme/app.css ./cmd/daisyui-lint/testdata/consumer
