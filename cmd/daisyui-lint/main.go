@@ -60,6 +60,7 @@ func run(args []string, stdout, stderr io.Writer) int {
 		"comma-separated globs of YOUR stylesheets: classes they define are not judged as DaisyUI")
 	format := fs.String("format", "text", "output format: text, json or sarif")
 	showVersion := fs.Bool("version", false, "print the tool version and the daisyUI release it validates")
+	checkUpdate := fs.Bool("check-update", false, "ask GitHub for a newer release and exit")
 	emitVocab := fs.Bool("emit-vocabulary", false,
 		"print the parsed skill as JSON (the bundled snapshot: make vocabulary)")
 	fs.Usage = func() {
@@ -76,6 +77,7 @@ off-scale arbitrary values.
   --format       text (default) or json
   --version      tool version + where the vocabulary came from + its daisyUI release
   --emit-vocabulary  print the parsed skill as JSON (make vocabulary)
+  --check-update print the newest release if it is newer, and exit
 
 Exit codes: 0 clean, 1 findings at error severity, 2 usage/setup error.
 `)
@@ -89,6 +91,9 @@ Exit codes: 0 clean, 1 findings at error severity, 2 usage/setup error.
 		paths = []string{"."}
 	}
 
+	if *checkUpdate {
+		return runUpdateCheck(stdout, stderr, Version)
+	}
 	if *emitVocab {
 		return emitVocabulary(stdout, stderr, paths[0], *skillPath)
 	}
