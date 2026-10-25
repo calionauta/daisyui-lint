@@ -1,0 +1,52 @@
+name: daisyui-lint
+description: >-
+  Lint DaisyUI class usage: unknown classes, parts without their container,
+  components on the wrong element, retired v4 names, duplicate modifiers and
+  off-scale values.
+author: calionauta
+branding:
+  icon: check-circle
+  color: purple
+
+inputs:
+  paths:
+    description: Space-separated paths to lint.
+    required: false
+    default: "."
+  strict:
+    description: Promote warnings (off-scale values) to errors.
+    required: false
+    default: "true"
+  css:
+    description: >-
+      Comma-separated globs of the project's own stylesheets; classes they
+      define are not judged as DaisyUI's.
+    required: false
+    default: ""
+  version:
+    description: daisyui-lint version to run (a tag, or "latest").
+    required: false
+    default: "latest"
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: "stable"
+        cache: false
+    - name: Run daisyui-lint
+      shell: bash
+      env:
+        IN_PATHS: ${{ inputs.paths }}
+        IN_STRICT: ${{ inputs.strict }}
+        IN_CSS: ${{ inputs.css }}
+        IN_VERSION: ${{ inputs.version }}
+      run: |
+        set -euo pipefail
+        args=()
+        if [ "$IN_STRICT" = "true" ]; then args+=(--strict); fi
+        if [ -n "$IN_CSS" ]; then args+=(--css "$IN_CSS"); fi
+        # shellcheck disable=SC2086 # paths is a space-separated list by design
+        go run "github.com/calionauta/daisyui-lint/cmd/daisyui-lint@${IN_VERSION}" "${args[@]}" $IN_PATHS
