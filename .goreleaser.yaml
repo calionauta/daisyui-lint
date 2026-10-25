@@ -1,0 +1,46 @@
+version: 2
+
+project_name: daisyui-lint
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: daisyui-lint
+    main: ./cmd/daisyui-lint
+    binary: daisyui-lint
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w -X main.Version={{ .Version }}
+
+# Asset naming mirrors datastar-lint's convention, so a future --check-update
+# can read both tools' releases with one parser.
+archives:
+  - id: daisyui-lint
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    formats:
+      - tar.gz
+    files:
+      - README.md
+      - LICENSE
+      - CHANGELOG.md
+
+checksum:
+  name_template: checksums.txt
+
+# release-please owns the changelog and the release note: goreleaser builds and
+# uploads the assets only.
+changelog:
+  disable: true
+
+release:
+  draft: false
+  prerelease: auto

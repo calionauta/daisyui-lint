@@ -1,0 +1,28 @@
+name: release-please
+
+# release-please reads conventional commits on master and keeps ONE open release
+# PR. Merging that PR is the release: it bumps the annotated Version constant,
+# updates CHANGELOG.md, tags, and creates the GitHub release. The tag then
+# triggers release.yml, which builds the binaries with goreleaser.
+#
+# Why not tag-and-run-goreleaser by hand (the datastar-lint model)? Because that
+# is exactly the shape that shipped v0.13.2 there with a stale version constant:
+# three manual steps, one of them forgettable. The Version/CHANGELOG test stays as
+# the backstop; this workflow makes it unnecessary.
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v4
+        with:
+          config-file: .release-please-config.json
+          manifest-file: .release-please-manifest.json
