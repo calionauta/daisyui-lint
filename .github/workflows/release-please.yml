@@ -1,14 +1,16 @@
 name: release-please
 
 # release-please reads conventional commits on master and keeps ONE open release
-# PR. Merging that PR is the release: it bumps the annotated Version constant,
-# updates CHANGELOG.md, tags, and creates the GitHub release. The tag then
-# triggers release.yml, which builds the binaries with goreleaser.
+# PR. Merging that PR bumps the annotated Version constant, updates CHANGELOG.md,
+# tags, and creates the GitHub release.
 #
-# Why not tag-and-run-goreleaser by hand (the datastar-lint model)? Because that
-# is exactly the shape that shipped v0.13.2 there with a stale version constant:
-# three manual steps, one of them forgettable. The Version/CHANGELOG test stays as
-# the backstop; this workflow makes it unnecessary.
+# The binaries are built by release.yml, and it has to be DISPATCHED, not left to
+# the tag event: release-please creates the tag with the workflow's GITHUB_TOKEN,
+# and GitHub does not start a run from an event a GITHUB_TOKEN produced
+# (anti-recursion). `on: push: tags` alone never fires for a release-please tag —
+# this is the failure that left eight gogogo releases with zero assets. The
+# explicit `gh workflow run` below is the documented bridge, and it needs
+# `actions: write` to be allowed to dispatch.
 on:
   push:
     branches: [master]
@@ -17,12 +19,24 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  actions: write
 
 jobs:
   release-please:
     runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
     steps:
       - uses: googleapis/release-please-action@v4
+        id: release
         with:
           config-file: .release-please-config.json
           manifest-file: .release-please-manifest.json
+
+      - name: Dispatch the binary build for the released tag
+        if: ${{ steps.release.outputs.release_created == 'true' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.release.outputs.tag_name }}
+        run: gh workflow run release.yml --repo "$GITHUB_REPOSITORY" --ref master -f tag="$TAG"

@@ -1,12 +1,19 @@
 name: release
 
-# Triggered by the tag release-please creates (or by hand). Builds the binaries
-# and uploads them to the release; the changelog and the release note come from
-# release-please, so goreleaser's own changelog is disabled.
+# Builds the binaries (goreleaser) for a released tag.
+#
+# Two triggers, and the second is load-bearing:
+#   * `workflow_dispatch` with a tag input — the bridge from release-please
+#     (a tag created by GITHUB_TOKEN does not fire `push: tags`).
+#   * `push: tags: v*` — a hand-cut tag, kept for the manual escape hatch.
 on:
   push:
     tags: ["v*"]
   workflow_dispatch:
+    inputs:
+      tag:
+        description: Tag to release (e.g. v0.2.0)
+        required: true
 
 permissions:
   contents: write
@@ -17,6 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
+          ref: ${{ inputs.tag || github.ref }}
           fetch-depth: 0
       - uses: actions/setup-go@v5
         with:
