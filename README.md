@@ -22,7 +22,7 @@ Prebuilt binaries (linux/darwin, amd64/arm64) are attached to each
 | `PART_WITHOUT_PARENT` | a part (`card-body`, `dropdown-content`, …) without its component in the same file |
 | `HOST_MISMATCH` | a component the skill documents on exactly one form element, used on another (`toggle` on a `<button>` holds no state) |
 | `RETIRED_CLASS` | a DaisyUI 4 name, with the v5 replacement in the message |
-| `DUPLICATE_MODIFIER` | two sizes or two colours in one class list — `{MODIFIER}` is one of each |
+| `DUPLICATE_MODIFIER` | two sizes or two colours on one element — a component takes one of each |
 | `ARBITRARY_VALUE` | an off-scale value (`text-[13px]`) on a style axis; warning by default, error under `--strict` |
 
 These are the failures a compiler cannot see: the classes are valid strings, the
@@ -34,9 +34,7 @@ wrong, or as design drift that accumulates one plausible value at a time.
 You do not need this to build a DaisyUI app. You need it when markup changes
 faster than anyone reads the class list — agents writing views, a v4 to v5
 migration, contributors who have not memorised the vocabulary. It costs about
-0.3s on a mid-size app and prints one line when clean, which is why
-[gogogo](https://github.com/calionauta/gogogo-fullstack-template) runs it in CI
-on every push.
+0.3s on a mid-size app and prints one line when clean.
 
 ## What this is not
 
@@ -68,7 +66,7 @@ daisyui-lint [flags] [paths...]
 Exit codes: `0` clean, `1` findings at error severity, `2` usage or setup error.
 
 `.templ`, `.html` and directories are linted; `node_modules/`, `vendor/`,
-`testdata/`, `site/` and `dist/` are skipped.
+`.git/`, `testdata/`, `site/` and `dist/` are skipped.
 
 ## Severity is the policy
 
@@ -102,7 +100,13 @@ a silent narrowing. `--version` always says which vocabulary a run used.
     paths: web/
     strict: "true"
     css: "src/*.css"
+    version: v0.2.0   # keep in step with the ref above
 ```
+
+The action is composite: it resolves the linter with
+`go run github.com/calionauta/daisyui-lint/cmd/daisyui-lint@<version>`. `version`
+defaults to `latest`, independently of the action ref — pin both, or the gate
+moves when you push.
 
 ## Releases
 
