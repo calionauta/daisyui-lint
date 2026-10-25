@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.2.1](https://github.com/calionauta/daisyui-lint/compare/v0.2.0...v0.2.1) (2026-10-25)
+
+
+### Fixed
+
+* **cli:** help lists --css and sarif, exits 0, and points at SKILL.md ([#8](https://github.com/calionauta/daisyui-lint/issues/8)) ([0442c7e](https://github.com/calionauta/daisyui-lint/commit/0442c7e89fe068612ec1246d08f8e9f0626407eb))
+
+
+### Documentation
+
+* say what the linter is not, and fix the upstream URL ([#6](https://github.com/calionauta/daisyui-lint/issues/6)) ([4fdc0f1](https://github.com/calionauta/daisyui-lint/commit/4fdc0f1bfc18a63a7fc1e4fa2a092df8584f0b01))
+
 ## [0.2.0](https://github.com/calionauta/daisyui-lint/compare/v0.1.0...v0.2.0) (2026-10-25)
 
 
