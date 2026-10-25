@@ -1,0 +1,30 @@
+name: daisyui-drift
+
+# Keeps the vendored DaisyUI skill honest.
+#
+# The vocabulary this tool derives from is NOT written here: it lives upstream at
+# https://daisyui.com/SKILL.md and is vendored into skills/daisyui/ so the parser
+# and the bundled snapshot are built from pinned text (the skill cannot be fetched
+# at lint time — CI has to work offline). A vendored copy with no currency check
+# silently becomes a fork: upstream adds a component, this tool keeps enforcing
+# the old vocabulary, and `make vocabulary` regenerates a snapshot of a stale text.
+#
+# Scheduled rather than per-push: the finding is "upstream moved", which no push
+# causes, and the check needs the network. It never gates an unrelated PR: it
+# fails on its own run, which is where a maintainer sees it.
+on:
+  schedule:
+    # Thursdays, off the hour so it does not pile onto the midnight-UTC stampede.
+    - cron: "23 9 * * 4"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Vendored skill matches upstream and its pin
+        run: bash bin/check-daisyui-drift.sh --strict
