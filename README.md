@@ -5,8 +5,9 @@ the DaisyUI vocabulary — derived from the vendored skill, not hand-maintained 
 and catches the mistakes that compile, render, and still look almost right.
 
 ```bash
-go install github.com/calionauta/daisyui-lint/cmd/daisyui-lint@latest
-daisyui-lint --version
+# Pin the version: a gate that resolves @latest changes under you.
+go install github.com/calionauta/daisyui-lint/cmd/daisyui-lint@v0.2.0
+daisyui-lint --version      # tool version, vocabulary source, DaisyUI release
 daisyui-lint --strict web/
 ```
 
@@ -27,6 +28,25 @@ Prebuilt binaries (linux/darwin, amd64/arm64) are attached to each
 These are the failures a compiler cannot see: the classes are valid strings, the
 markup renders, and the defect shows up as a control that looks right and behaves
 wrong, or as design drift that accumulates one plausible value at a time.
+
+## When it pays
+
+You do not need this to build a DaisyUI app. You need it when markup changes
+faster than anyone reads the class list — agents writing views, a v4 to v5
+migration, contributors who have not memorised the vocabulary. It costs about
+0.3s on a mid-size app and prints one line when clean, which is why
+[gogogo](https://github.com/calionauta/gogogo-fullstack-template) runs it in CI
+on every push.
+
+## What this is not
+
+- **Not a CSS build check.** Whether a used class ended up in your compiled
+  bundle is a build-time question (Tailwind emits what it scans); use your build
+  gate for that. This lints the vocabulary, not the bundle.
+- **Not your design system's gate.** Classes your own stylesheets define are
+  declared with `--css` and are never judged as DaisyUI's.
+- **Not a visual or runtime check.** It cannot tell you a control behaves wrong;
+  it tells you the class cannot mean what the markup implies.
 
 ## Usage
 
@@ -67,7 +87,7 @@ and the codes are the contract.
 
 ## Where the vocabulary comes from
 
-The skill is the upstream artifact (`daisyui.com/llms.txt`, vendored under
+The skill is the upstream artifact (`daisyui.com/SKILL.md`, vendored under
 `skills/daisyui/`, pinned by `UPSTREAM_SHA`). The binary embeds a **generated
 snapshot** of it so it works in a project with no vendored copy;
 `make vocabulary` regenerates the snapshot and `TestBundledVocabularyMatchesSkill`
@@ -77,7 +97,7 @@ a silent narrowing. `--version` always says which vocabulary a run used.
 ## GitHub Action
 
 ```yaml
-- uses: calionauta/daisyui-lint@v0.1.0
+- uses: calionauta/daisyui-lint@v0.2.0
   with:
     paths: web/
     strict: "true"
