@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/calionauta/daisyui-lint/compare/v0.1.0...v0.2.0) (2026-10-25)
+
+
+### Added
+
+* add --check-update ([#2](https://github.com/calionauta/daisyui-lint/issues/2)) ([f65ed1d](https://github.com/calionauta/daisyui-lint/commit/f65ed1dec50859fbc2493f7f0edf040009b8d89c))
+
 ## [0.1.0] - 2026-10-25
 
 First release. Extracted from the `gogogo` template, where the rules ran as a
