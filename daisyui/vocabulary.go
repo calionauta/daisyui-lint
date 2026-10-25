@@ -6,7 +6,7 @@
 // rather than keeping a second copy.
 //
 // The vocabulary is never hand-maintained. It is parsed from the vendored DaisyUI
-// skill (`.agents/skills/daisyui/SKILL.md`, refreshed from daisyui.com/llms.txt
+// skill (`.agents/skills/daisyui/SKILL.md`, refreshed from daisyui.com/SKILL.md
 // and pinned by UPSTREAM_SHA), so a version bump widens the checks instead of
 // leaving them behind — and a reshape of a component section is an ERROR, not a
 // silent narrowing.

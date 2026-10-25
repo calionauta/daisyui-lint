@@ -23,6 +23,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -70,11 +71,13 @@ Checks DaisyUI usage against the vendored skill: declared classes, parts and
 their containers, form-control hosts, retired v4 names, duplicate modifiers, and
 off-scale arbitrary values.
 
-  --skill PATH   vendored skill (SKILL.md / llms.txt); default: search upward
-                 for .agents/skills/daisyui/SKILL.md or skills/daisyui/SKILL.md
+  --skill PATH   vendored skill (SKILL.md); default: search upward for
+                 .agents/skills/daisyui/SKILL.md or skills/daisyui/SKILL.md
   --allow PATH   accepted arbitrary-value tokens, one per line
   --strict       warnings become errors (recommended in CI of an app)
-  --format       text (default) or json
+  --css GLOBS    comma-separated globs of YOUR stylesheets: classes they
+                 define are not judged as DaisyUI's
+  --format       text (default), json or sarif
   --version      tool version + where the vocabulary came from + its daisyUI release
   --emit-vocabulary  print the parsed skill as JSON (make vocabulary)
   --check-update print the newest release if it is newer, and exit
@@ -83,6 +86,9 @@ Exit codes: 0 clean, 1 findings at error severity, 2 usage/setup error.
 `)
 	}
 	if err := fs.Parse(args); err != nil {
+		if errors.Is(err, flag.ErrHelp) {
+			return 0 // asking for help is not a usage error
+		}
 		return 2
 	}
 

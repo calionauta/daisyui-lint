@@ -191,7 +191,7 @@ func unknownClassMessage(spec *Component, got string) string {
 	if near := spec.nearest(got); near != "" {
 		msg += fmt.Sprintf("; did you mean %q?", near)
 	} else {
-		msg += " (typo, or the skill is stale: refresh it from daisyui.com/llms.txt)"
+		msg += " (typo, or the skill is stale: refresh it from daisyui.com/SKILL.md)"
 	}
 	return msg
 }
